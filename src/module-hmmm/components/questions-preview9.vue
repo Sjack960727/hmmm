@@ -104,8 +104,8 @@ export default {
     return {
       questionDetail: {},
       showVideo: false,
-      radio: 1,
-      checkList: []
+      radio: 1
+      // checkList: []
 
     }
   },
@@ -117,7 +117,13 @@ export default {
     }
   },
   computed: {
-
+    checkList: {
+      get: function () {
+        const arr = []
+        return arr
+      },
+      set: function () {}
+    }
   }
 }
 </script>
