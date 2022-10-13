@@ -1,3 +1,4 @@
+import { questionType, difficulty } from '@/api/hmmm/constants.js'
 function pluralize (time, label) {
   if (time === 1) {
     return time + label
@@ -158,4 +159,15 @@ export function toThousandslsFilter (num) {
   return (+num || 0)
     .toString()
     .replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+}
+
+export function formatQuestionType (val) {
+  const res = questionType.find(ele => ele.value === +val)
+  return res ? res.label : '未知'
+  // return value + '过滤器'
+}
+
+export function formatDifficulty (val) {
+  const res = difficulty.find(ele => ele.value === +val)
+  return res ? res.label : '未知'
 }
