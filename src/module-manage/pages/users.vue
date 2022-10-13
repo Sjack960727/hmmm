@@ -37,6 +37,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <page-tool :paginationPage="paginationPage"></page-tool>
     </el-card>
 
   </div>
@@ -44,13 +45,16 @@
 
 <script>
 import { list } from '@/api/base/users'
+import PageTool from '../components/page-tool.vue'
 export default {
   data () {
     return {
       userList: []
     }
   },
-
+  components: {
+    PageTool
+  },
   created () {
     this.getUserList()
   },
