@@ -122,7 +122,10 @@ export default {
     },
     async getDetails (item) {
       // console.log(item.id)
-      const data = { id: item.id }
+      // const data = { id: item.id }
+      // 测试多选
+      const data = { id: 19 }
+
       const res = await detail(data)
       console.log(res.data)
       this.questionDetail = res.data

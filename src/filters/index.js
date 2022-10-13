@@ -162,12 +162,12 @@ export function toThousandslsFilter (num) {
 }
 
 export function formatQuestionType (val) {
-  const res = questionType.find(ele => ele.value === val)
+  const res = questionType.find(ele => ele.value === +val)
   return res ? res.label : '未知'
   // return value + '过滤器'
 }
 
 export function formatDifficulty (val) {
-  const res = difficulty.find(ele => ele.value === val)
+  const res = difficulty.find(ele => ele.value === +val)
   return res ? res.label : '未知'
 }
