@@ -19,10 +19,10 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="学科">
-              <el-select placeholder="请选择">
+              <el-select placeholder="请选择" v-model="formData.subject"   @change="changeSelect">
                 <el-option
                   :label="item.subjectName"
-                  value="shanghai"
+                  :value="item"
                   v-for="item in formData.subjects"
                   :key="item.id"
                 >
@@ -32,7 +32,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="二级目录">
-              <el-select placeholder="请选择">
+              <el-select placeholder="请选择" v-model="erji">
                 <el-option label="区域一" value="shanghai"></el-option>
                 <el-option label="区域二" value="beijing"></el-option>
               </el-select>
@@ -40,7 +40,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="标签">
-              <el-select placeholder="请选择">
+              <el-select placeholder="请选择" v-model="biaoqian">
                 <el-option label="区域一" value="shanghai"></el-option>
                 <el-option label="区域二" value="beijing"></el-option>
               </el-select>
@@ -48,7 +48,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="关键词">
-              <el-input placeholder="根据题干搜索"></el-input>
+              <el-input placeholder="根据题干搜索" v-model="keyword"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -96,6 +96,7 @@
         </el-form-item>
         <el-form-item label="城市">
           <el-select placeholder="请选择">
+            <el-option :label="item" :value="item" v-for="item in provinces" :key="item.city"></el-option>
             <el-option label="区域一" value="shanghai" class="city"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
@@ -117,7 +118,7 @@
         <el-tab-pane label="已审核" name="third"></el-tab-pane>
         <el-tab-pane label="已拒绝" name="fourth"></el-tab-pane>
       </el-tabs>
-      <el-alert type="info" show-icon>
+      <el-alert type="info" show-icon :closable="false">
         <template #title> 数据一共{{counts}}条 </template>
       </el-alert>
 
@@ -167,7 +168,10 @@
 
 <script>
 import { list } from '@/api/hmmm/subjects.js'
+import { simple } from '@/api/hmmm/directorys.js'
+import { simpletag } from '@/api/hmmm/tags.js'
 import { choice } from '@/api/hmmm/questions.js'
+import { provinces } from '@/api/hmmm/citys.js'
 import { parseTimeByString } from '@/filters'
 import Enumberword from '@/utils/changeword.js'
 import pagination from '@/module-manage/components/page-tool.vue'
@@ -181,7 +185,11 @@ export default {
     return {
       postion: 'right',
       activeName: 'first',
+      erji: '',
+      biaoqian: '',
+      keyword: '',
       counts: '',
+      provinces: provinces(),
       choiceType: Enumberword.choiceType,
       difficulty: Enumberword.difficulty,
       questionType: Enumberword.questionType,
@@ -192,8 +200,10 @@ export default {
         pagesize: 5
       },
       formData: {
-        subjects: ''
+        subjects: '',
+        subject: ''
       },
+      subjectID: '',
       tableData: []
     }
   },
@@ -215,7 +225,13 @@ export default {
         item.addDate = parseTimeByString(item.addDate)
         item.question = item.question.replace(/<\/?.+?>/g, '')
       })
-      console.log(this.tableData)
+      // console.log(this.tableData)
+    },
+    async changeSelect (e) {
+      this.subjectID = e.id
+      await simple({ subjectID: this.subjectID })
+      await simpletag({ subjectID: this.subjectID })
+      console.log(e.id)
     },
     formatterFn (row, column, cellValue) {
       const res = this.choiceType.find(ele => ele.id === cellValue)
@@ -227,12 +243,12 @@ export default {
     },
     formatterFn2 (row, column, cellValue) {
       const res = this.questionType.find(ele => ele.id === +cellValue)
-      console.log(res)
+      // console.log(res)
       return res ? res.value : '未知'
     },
     formatterFn3 (row, column, cellValue) {
       const res = this.publishState.find(ele => ele.id === +cellValue)
-      console.log(res)
+      // console.log(res)
       return res ? res.value : '未知'
     }
   }
