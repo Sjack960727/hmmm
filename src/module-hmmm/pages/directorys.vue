@@ -53,7 +53,7 @@
             <el-button @click="handleClick(scope.row)" type="text"
               >{{scope.row.state==='已禁用'?'启用':'禁用'}}</el-button
             >
-            <el-button type="text" :disabled="scope.row.state==='已启用'">修改</el-button>
+            <el-button type="text" :disabled="scope.row.state==='已启用'" @click="changes(scope.row)">修改</el-button>
             <el-button type="text" :disabled="scope.row.state==='已启用'" @click="del(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -61,7 +61,8 @@
 
     </el-card>
     <!-- 弹出框 -->
-    <directorys-add :dialogVisible.sync="isShow"></directorys-add>
+    <directorys-add :dialogVisible.sync="isShow" ref="adddirectorys"></directorys-add>
+    <!-- <changemulu :dialogVisible.sync="isShow1" :row="currow"></changemulu> -->
   </div>
 </template>
 
@@ -76,6 +77,8 @@ export default {
   data () {
     return {
       isShow: false,
+      isShow1: false,
+      currow: '',
       muluname: '',
       condition: '',
       counts: '',
@@ -100,17 +103,17 @@ export default {
         item.state = item.state === 0 ? '已禁用' : '已启用'
       })
     },
-    async handleClick (row) {
+    handleClick (row) {
       // console.log(row)
       /* eslint-disable */
       const data = {
         id: row.id,
         state: row.state = row.state === '已禁用' ? 1 : 0
       }
-    await  changeState(data)
-      this.getTableList()
+       changeState(data)
       row.state = row.state === '已禁用' ? '已启用' : '已禁用'
       this.$message.success('操作成功')
+      this.getTableList()
     },
     search() {
       const state = this.condition === '禁用' ? 0 : 1
@@ -126,6 +129,11 @@ export default {
      await remove(row)
      this.getTableList()
      this.$message.success('删除成功')
+    },
+    changes(row) {
+      console.log(row);
+      this.$refs.adddirectorys.form = { ...row }
+      this.isShow=true
     }
   }
 }

@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <el-dialog :title="title" :visible.sync="dialogVisible" width="30%" :before-close="cancel">
+    <el-dialog title="修改目录" :visible.sync="dialogVisible" width="30%" :before-close="cancel">
       <el-form ref="form" :model="form" label-width="100px" class="demo-ruleForm">
         <el-form-item label="所属学科" >
-            <el-select placeholder="请选择" v-model="form.subjectName" style="width:100%" @change="selecChange">
+            <el-select placeholder="请选择" v-model="row.subjectName" style="width:100%" @change="selecChange">
                 <el-option :label="item.label" :value="item"
                 v-for="item in addLists"
                 :key="item.value">
@@ -11,7 +11,7 @@
               </el-select>
           </el-form-item>
         <el-form-item label="目录名称"  prop="directoryName" :rules="[{required:true,trigger:'blur',message:'请输入目录名称'}]">
-          <el-input v-model="form.directoryName"></el-input>
+          <el-input v-model="row.directoryName"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -24,12 +24,16 @@
 
 <script>
 import { simple } from '@/api/hmmm/subjects.js'
-import { add, update } from '@/api/hmmm/directorys.js'
+// import { add } from '@/api/hmmm/directorys.js'
 export default {
   props: {
     dialogVisible: {
       type: Boolean,
       default: false
+    },
+    row: {
+      type: [Object, String],
+      default: () => ({})
     }
   },
   data () {
@@ -38,19 +42,13 @@ export default {
       form: {
         directoryName: '',
         subjectID: '',
-        id: null,
-        subjectName: ''
+        id: null
       },
       condition: ''
     }
   },
   created () {
     this.addList()
-  },
-  computed: {
-    title () {
-      return this.form.id ? '修改目录' : '新增目录'
-    }
   },
   methods: {
     async addList () {
@@ -65,20 +63,13 @@ export default {
     async submit () {
       await this.$refs.form.validate()
       // console.log(123)
-      this.form.id ? await update(this.form) : await add(this.form)
-      this.$parent.getTableList()
+      // await add(this.form)
+      // this.$parent.getTableList()
       this.cancel()
-      this.$message.success(this.form.id ? '修改成功' : '添加成功')
+      // this.$message.success('添加成功')
     },
     cancel () {
       this.$emit('update:dialogVisible', false)
-      this.$refs.form.resetFields()
-      this.form = {
-        directoryName: '',
-        subjectID: '',
-        id: null,
-        subjectName: ''
-      }
     }
   }
 }
