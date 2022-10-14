@@ -120,6 +120,11 @@ export default {
     checkList: {
       get: function () {
         const arr = []
+        this.questionDetail.options.forEach(ele => {
+          if (ele.isRight === 1) {
+            arr.push(ele.title)
+          }
+        })
         return arr
       },
       set: function () {}
