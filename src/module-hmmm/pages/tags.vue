@@ -1,7 +1,7 @@
 <template>
   <div class='container'>
     <el-card>
-      <el-row>
+      <el-row class="elRow">
         <el-col :span="18">
           <!-- 搜索横向表单 -->
           <el-form ref="form" class="elForm"  label-width="80px" :inline="true"   >
@@ -122,8 +122,11 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页组件 -->
+    <tags-paging :page='page' :total='listData.counts' :loadingList='loadingList' />
     </el-card>
-    <!-- 修改按钮弹出层 -->
+
+    <!-- 修改按钮弹出层组件 -->
     <editDialog
       :visible.sync='showVisible'
       :loadingList='loadingList'
@@ -137,10 +140,12 @@
 import { list, changeState, remove } from '@/api/hmmm/tags'
 import dayjs from 'dayjs'
 import editDialog from '../components/tags-edit-dialog.vue'
+import tagsPaging from '../components/tags-pagination.vue'
 export default {
   name: 'tags',
   components: {
-    editDialog
+    editDialog,
+    tagsPaging
   },
   data () {
     return {
@@ -175,8 +180,10 @@ export default {
   methods: {
     // 获取列表
     async loadingList () {
+      this.loading = true
       const { data } = await list(this.page)
       this.listData = data
+      this.loading = false
     },
     // 状态(表格栏-操作列)
     async active (data) {
@@ -256,6 +263,7 @@ export default {
 }
 ::v-deep .elForm {
   height: 51px;
+  // min-width: 735px;
 }
 .elBtn {
   width: 56px;

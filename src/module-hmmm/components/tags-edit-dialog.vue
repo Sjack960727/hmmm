@@ -3,7 +3,7 @@
     <el-dialog
       :title="currentData.id ? '修改目录' : '新增目录'"
       :visible="visible"
-      @close='handleClose($event)'>
+      @close='handleClose()'>
 
       <el-form :model="newCurrentData" ref="diaLogForm" :rules="rules">
 
@@ -26,8 +26,8 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleClose($event)">取 消</el-button>
-        <el-button type="primary" @click="handleConfirm($event)">确 定</el-button>
+        <el-button @click="handleClose()">取 消</el-button>
+        <el-button type="primary" @click="handleConfirm()">确 定</el-button>
       </div>
 
     </el-dialog>
@@ -97,7 +97,6 @@ export default {
     // 退出按钮
     async handleClose () {
       this.$emit('update:visible', false)
-      // await this.
     },
     // 获取input下拉内容
     async loadingSubjects () {
