@@ -1,48 +1,33 @@
 <template>
   <div class='container'>
     <el-card>
-      <el-row class="elRow">
-        <el-col :span="18">
-          <!-- 搜索横向表单 -->
-          <el-form ref="form" class="elForm"  label-width="80px" :inline="true"   >
-
-            <el-form-item label="标签名称" >
-              <el-input class="elInput" v-model="searchList.tagName"  placeholder="请输入名称"></el-input>
-            </el-form-item>
-
-            <el-form-item label="状态" >
-              <el-select class="elSelect" v-model="searchList.state" placeholder="请选择">
-                  <el-option
-                    v-for="item in status"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                  </el-option>
-                </el-select>
-            </el-form-item>
-
-            <el-form-item>
-              <el-button class="elBtn" size="small" @click="clearData">清除</el-button>
-              <el-button class="elBtn" size="small" @click="searchBtn" type="primary">搜索</el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <!-- 新增按钮 -->
-        <el-col :span="6" style="text-align: right;">
+      <!-- 搜索/新增/总条数灰色提示栏目组件 -->
+      <tags-headers :totalCount='listData.counts'>
+        <template #addBtn>
           <el-button class="addBtn" type="primary" icon="el-icon-edit" @click="addTag">新增标签</el-button>
-        </el-col>
-
-      </el-row>
-      <!-- 灰色警告栏目 -->
-      <el-alert
-        :title="`数据一共 ${ listData.counts } 条`"
-        type="info"
-        :closable='false'
-        show-icon
-        style="margin-bottom: 15px;"
-        >
-      </el-alert>
+        </template>
+        <template #label>
+            <span>标签名称</span>
+        </template>
+        <template #sarchInput>
+          <el-input class="elInput" v-model="searchList.tagName"  placeholder="请输入名称"></el-input>
+        </template>
+        <template #selectIput>
+          <el-select class="elSelect" v-model="searchList.state" placeholder="请选择">
+            <el-option
+              v-for="item in status"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </template>
+        <template #ClearAndSearch>
+          <el-button class="elBtn" size="small" @click="clearData">清除</el-button>
+          <el-button class="elBtn" size="small" @click="searchBtn" type="primary">搜索</el-button>
+        </template>
+      </tags-headers>
       <!-- 表单 -->
       <el-table
         v-loading='loading'
@@ -89,7 +74,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="address"
+          prop=""
           label="操作"
           width="150"
           >
@@ -123,7 +108,11 @@
         </el-table-column>
       </el-table>
       <!-- 分页组件 -->
-    <tags-paging :page='page' :total='listData.counts' :loadingList='loadingList' />
+    <tags-paging
+      :page='page'
+      :total='listData.counts'
+      :loadingList='loadingList'
+    />
     </el-card>
 
     <!-- 修改按钮弹出层组件 -->
@@ -141,11 +130,13 @@ import { list, changeState, remove } from '@/api/hmmm/tags'
 import dayjs from 'dayjs'
 import editDialog from '../components/tags-edit-dialog.vue'
 import tagsPaging from '../components/tags-pagination.vue'
+import tagsHeaders from '../components/tags-headers'
 export default {
   name: 'tags',
   components: {
     editDialog,
-    tagsPaging
+    tagsPaging,
+    tagsHeaders
   },
   data () {
     return {
@@ -185,13 +176,13 @@ export default {
       this.listData = data
       this.loading = false
     },
-    // 状态(表格栏-操作列)
+    // 状态(禁用/启用)
     async active (data) {
       data.state = data.state === 1 ? data.state - 1 : data.state + 1
       await changeState(data)
       this.$message.success('操作成功')
     },
-    // 点击修改显示弹出层
+    // 修改
     handleEdit (row) {
       this.showVisible = true
       this.currentData = row
@@ -261,34 +252,12 @@ export default {
 .container {
   padding: 10px;
 }
-::v-deep .elForm {
-  height: 51px;
-  // min-width: 735px;
-}
-.elBtn {
-  width: 56px;
-}
-::v-deep .elInput {
-  width: 200px;
-  height: 32px;
-}
-::v-deep .elSelect {
-  width: 215px;
-  height: 32px;
-}
-.addBtn {
-  background-color: #66c141;
-  width: 97px;
-  height: 32px;
-  padding: 9px 15px;
-  font-size: 12px;
-  border-color: transparent;
-}
+
 ::v-deep .is-leaf {
   background-color: #fafafa !important;
   border-bottom: 2px solid #e8e8e8 !important;
 }
-::v-deep .el-table__row{
+::v-deep .el-table__row {
   height: 57px;
 }
 .elButton {
@@ -300,5 +269,13 @@ export default {
 }
 .activeBtn {
   color: #c0c9db;
+}
+.addBtn {
+  background-color: #66c141;
+  width: 97px;
+  height: 32px;
+  padding: 9px 15px;
+  font-size: 12px;
+  border-color: transparent;
 }
 </style>

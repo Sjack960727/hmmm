@@ -59,7 +59,7 @@ export default {
       // options: '',
       rules: {
         tagName: [
-          { required: true, message: '请输入内容', trigger: 'blur' }
+          { required: true, message: '请输入内容' }
         ]
       }
     }
@@ -94,22 +94,16 @@ export default {
       await this.loadingList()
       this.$emit('update:visible', false)
     },
-    // 退出按钮
+    // 退出
     async handleClose () {
       this.$emit('update:visible', false)
+      this.$refs.diaLogForm.clearValidate('tagName')
     },
     // 获取input下拉内容
     async loadingSubjects () {
       const { data } = await subjects()
       this.subjectsList = data
     }
-    // // 处理input下拉内容默认选中数据
-    // pitchOnCurrent () {
-    //   const data = this.subjectsList.find(item => {
-    //     return this.newCurrentData.subjectName === item.label
-    //   })
-    //   this.newCurrentData = { ...this.newCurrentData, ...data }
-    // }
   }
 }
 </script>

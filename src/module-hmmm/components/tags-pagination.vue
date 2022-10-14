@@ -9,7 +9,8 @@
       :page-size.sync="page.size"
       :page-sizes="[2, 5, 10]"
       layout="prev, pager,  next, sizes, jumper"
-      :total="total">
+      :total="total"
+    >
     </el-pagination>
   </div>
 </template>
@@ -31,7 +32,7 @@ export default {
       this.page.pagesize = val
       this.loadingList()
     },
-    handleCurrentChange (val) {
+    handleCurrentChange () {
       this.loadingList()
     }
   }
