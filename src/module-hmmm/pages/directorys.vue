@@ -1,21 +1,21 @@
 <template>
-  <div class='container'>
+  <div class="container">
     <el-card>
       <el-form :inline="true">
         <el-col :span="6">
           <el-form-item label="目录名称">
-              <el-input  v-model="muluname"></el-input>
+            <el-input v-model="muluname"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="15">
           <el-form-item label="状态">
             <el-select placeholder="请选择" v-model="condition">
-                <el-option label="启用" value="启用"></el-option>
-                <el-option label="禁用" value="禁用"></el-option>
-              </el-select>
+              <el-option label="启用" value="启用"></el-option>
+              <el-option label="禁用" value="禁用"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button @click="condition=''">清除</el-button>
+            <el-button @click="condition = ''">清除</el-button>
             <el-button type="primary" @click="search">搜索</el-button>
           </el-form-item>
         </el-col>
@@ -23,13 +23,15 @@
         </el-col> -->
         <el-col :span="3">
           <div class="grid-content bg-purple-light">
-            <el-button type="success" icon="el-icon-edit" @click="dialog">新增目录</el-button>
+            <el-button type="success" icon="el-icon-edit" @click="dialog"
+              >新增目录</el-button
+            >
           </div>
         </el-col>
       </el-form>
       <!-- 灰色数据统计框 -->
       <el-alert type="info" show-icon :closable="false">
-        <template #title> 数据一共{{counts}}条 </template>
+        <template #title> 数据一共{{ counts }}条 </template>
       </el-alert>
 
       <!-- 表格 -->
@@ -40,29 +42,53 @@
         </el-table-column>
         <el-table-column prop="directoryName" label="目录名称" width="150">
         </el-table-column>
-        <el-table-column prop="username" label="创建者" width="160" >
+        <el-table-column prop="username" label="创建者" width="160">
         </el-table-column>
         <el-table-column prop="addDate" label="创建日期" width="280">
         </el-table-column>
-        <el-table-column prop="totals" label="面试题数量" width="120" >
+        <el-table-column prop="totals" label="面试题数量" width="120">
         </el-table-column>
         <el-table-column prop="state" label="状态" width="100">
         </el-table-column>
-        <el-table-column  label="操作" >
+        <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text"
-              >{{scope.row.state==='已禁用'?'启用':'禁用'}}</el-button
+            <el-button @click="handleClick(scope.row)" type="text">{{
+              scope.row.state === "已禁用" ? "启用" : "禁用"
+            }}</el-button>
+            <el-button
+              type="text"
+              :disabled="scope.row.state === '已启用'"
+              @click="changes(scope.row)"
+              >修改</el-button
             >
-            <el-button type="text" :disabled="scope.row.state==='已启用'" @click="changes(scope.row)">修改</el-button>
-            <el-button type="text" :disabled="scope.row.state==='已启用'" @click="del(scope.row)">删除</el-button>
+            <el-button
+              type="text"
+              :disabled="scope.row.state === '已启用'"
+              @click="del(scope.row)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
 
+      <!-- 分页组件 -->
+      <el-pagination
+        v-if="counts > 0"
+        background
+        layout=" prev, pager, next,sizes, jumper"
+        :total="counts"
+        :current-page.sync="page.page"
+        :page-size.sync="page.pagesize"
+        @current-change="getTableList1"
+        :page-sizes="[5, 10,20,50]"
+        @size-change="getTableList1"
+      />
     </el-card>
     <!-- 弹出框 -->
-    <directorys-add :dialogVisible.sync="isShow" ref="adddirectorys"></directorys-add>
-    <!-- <changemulu :dialogVisible.sync="isShow1" :row="currow"></changemulu> -->
+    <directorys-add
+      :dialogVisible.sync="isShow"
+      ref="adddirectorys"
+    ></directorys-add>
   </div>
 </template>
 
@@ -85,7 +111,7 @@ export default {
       use: '',
       page: {
         page: 1,
-        size: 10
+        pagesize: 10
       },
       tableList: []
     }
@@ -98,45 +124,55 @@ export default {
       const { data } = await list(a)
       this.counts = data.counts
       this.tableList = data.items
-      this.tableList.forEach(item => {
+      this.tableList.forEach((item) => {
         item.addDate = parseTimeByString(item.addDate)
         item.state = item.state === 0 ? '已禁用' : '已启用'
       })
+    },
+    getTableList1 () {
+      this.getTableList(this.page)
     },
     handleClick (row) {
       // console.log(row)
       /* eslint-disable */
       const data = {
         id: row.id,
-        state: row.state = row.state === '已禁用' ? 1 : 0
-      }
-       changeState(data)
-      row.state = row.state === '已禁用' ? '已启用' : '已禁用'
-      this.$message.success('操作成功')
-      this.getTableList()
+        state: (row.state = row.state === "已禁用" ? 1 : 0),
+      };
+      changeState(data);
+      row.state = row.state === "已禁用" ? "已启用" : "已禁用";
+      this.$message.success("操作成功");
+      this.getTableList();
     },
     search() {
-      const state = this.condition === '禁用' ? 0 : 1
-      const searchdata = { state, ...this.page }
-      this.getTableList(searchdata)
-    //  console.log(searchdata);
+      const state = this.condition === "禁用" ? 0 : 1;
+      const searchdata = { state, ...this.page };
+      this.getTableList(searchdata);
+      //  console.log(searchdata);
     },
     dialog() {
       console.log(123);
-      this.isShow=true
+      this.isShow = true;
     },
-   async del(row) {
-     await remove(row)
-     this.getTableList()
-     this.$message.success('删除成功')
+    async del(row) {
+      await this.$confirm('确认删除该数据嘛？', '提示', {
+          type: 'warning'
+        })
+      await remove(row);
+      this.getTableList();
+      this.$message.success("删除成功");
     },
     changes(row) {
       console.log(row);
-      this.$refs.adddirectorys.form = { ...row }
-      this.isShow=true
-    }
-  }
-}
+      this.$refs.adddirectorys.form = { ...row };
+      this.isShow = true;
+    },
+  },
+};
 </script>
 
-<style scoped lang='less'></style>
+<style scoped lang='less'>
+.el-pagination {
+  text-align: right;
+}
+</style>

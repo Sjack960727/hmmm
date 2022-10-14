@@ -68,7 +68,7 @@ export default {
       this.form.id ? await update(this.form) : await add(this.form)
       this.$parent.getTableList()
       this.cancel()
-      this.$message.success(this.form.id ? '修改成功' : '添加成功')
+      this.$message.success('操作成功')
     },
     cancel () {
       this.$emit('update:dialogVisible', false)
