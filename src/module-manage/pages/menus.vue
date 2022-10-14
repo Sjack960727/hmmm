@@ -11,7 +11,7 @@
         row-key="id"
         default-expand-all
         ref="tableRef"
-        :tree-props="{children:'childs',hasChildren: 'points'}">
+        :tree-props="{children:'childs'}">
         <el-table-column
           prop="title"
           label="标题"
@@ -20,9 +20,6 @@
             <svg-icon icon-class="files" v-if="row.childs && !row.childs[0].is_point" class="iconfont"></svg-icon>
             <svg-icon icon-class="eyeo" v-else-if="row.is_point" class="iconfont"></svg-icon>
             <svg-icon icon-class="document" v-else class="iconfont"></svg-icon>
-              <!-- <i class="el-icon-folder-opened iconfont" v-if="row.childs && !row.childs[0].is_point"></i>
-              <i class="el-icon-setting iconfont" v-else-if="row.is_point"></i>
-              <i class='el-icon-document-remove iconfont' v-else ></i> -->
               <span>{{ row.title}}</span>
           </template>
         </el-table-column>
@@ -73,6 +70,7 @@ export default {
       const { data } = await list()
       this.initialMenuList = data
       this.menuList = JSON.parse(JSON.stringify(data).replace(/points/g, 'childs'))
+      // this.menuList = data
     },
     async removeList (row) {
       try {
