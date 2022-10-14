@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-button type="success" icon="el-icon-edit" class="addMuen" size="small" @click="addMenu">添加菜单</el-button>
+      <div  class="addMuen" >
+        <el-button type="primary" icon="el-icon-download"  size="small" @click="exportExcel">Excel导出</el-button>
+        <el-button type="success" icon="el-icon-edit" size="small" @click="addMenu">添加菜单</el-button>
+      </div>
       <el-table
         :data="menuList"
         style="width: 100%;margin-bottom: 20px;"
@@ -52,7 +55,9 @@ export default {
       menuList: [],
       dialogVisible: false,
       initialMenuList: [],
-      currForm: {}
+      currForm: {},
+      filterData: [],
+      headers: { title: '标题', is_point: '权限', code: '权限点代码', belong: '所属标题' }
     }
   },
   components: {
@@ -68,7 +73,6 @@ export default {
       const { data } = await list()
       this.initialMenuList = data
       this.menuList = JSON.parse(JSON.stringify(data).replace(/points/g, 'childs'))
-      console.log(data)
     },
     async removeList (row) {
       try {
@@ -96,6 +100,41 @@ export default {
         title: row.title
       }
       this.dialogVisible = true
+    },
+    deepData (data, belong = '主导航') {
+      data.forEach(item => {
+        if (item.is_point) {
+          this.filterData.push({ ...item, belong, is_point: item.title, title: '' })
+        } else {
+          this.filterData.push({ ...item, belong })
+        }
+        if (item.childs) {
+          this.deepData(item.childs, item.title)
+        } else if (item.points) {
+          this.deepData(item.points, item.title)
+        }
+      })
+    },
+    configurationData () {
+      return this.filterData.map(item => {
+        return Object.keys(this.headers).map(h => {
+          return item[h]
+        })
+      })
+    },
+    async exportExcel () {
+      this.deepData(this.initialMenuList)
+      const data = this.configurationData()
+      const header = Object.values(this.headers)
+      console.log(data)
+      const { export_json_to_excel } = await import('@/vendor/Export2Excel')
+      export_json_to_excel({
+        header, // 表头 必填
+        data, // 具体数据 必填
+        filename: '菜单权限表', // 非必填
+        autoWidth: true, // 非必填
+        bookType: 'xlsx' // 非必填
+      })
     }
   }
 }
