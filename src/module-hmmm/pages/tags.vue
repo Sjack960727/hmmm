@@ -1,9 +1,296 @@
 <template>
-  <div class='container'>标签管理</div>
+  <div class='container'>
+    <el-card>
+      <el-row>
+        <el-col :span="18">
+          <!-- 搜索横向表单 -->
+          <el-form ref="form" class="elForm"  label-width="80px" :inline="true"   >
+
+            <el-form-item label="标签名称" >
+              <el-input class="elInput" v-model="searchList.tagName"  placeholder="请输入名称"></el-input>
+            </el-form-item>
+
+            <el-form-item label="状态" >
+              <el-select class="elSelect" v-model="searchList.state" placeholder="请选择">
+                  <el-option
+                    v-for="item in status"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item>
+              <el-button class="elBtn" size="small" @click="clearData">清除</el-button>
+              <el-button class="elBtn" size="small" @click="searchBtn" type="primary">搜索</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <!-- 新增按钮 -->
+        <el-col :span="6" style="text-align: right;">
+          <el-button class="addBtn" type="primary" icon="el-icon-edit" @click="addTag">新增标签</el-button>
+        </el-col>
+
+      </el-row>
+      <!-- 灰色警告栏目 -->
+      <el-alert
+        :title="`数据一共 ${ listData.counts } 条`"
+        type="info"
+        :closable='false'
+        show-icon
+        style="margin-bottom: 15px;"
+        >
+      </el-alert>
+      <!-- 表单 -->
+      <el-table
+        v-loading='loading'
+        :data='listData.items'
+        style="width: 100%"
+        >
+
+        <el-table-column
+          type="index"
+          label="序号"
+          width="80">
+        </el-table-column>
+
+        <el-table-column
+          prop="subjectName"
+          label="所属学院"
+          >
+        </el-table-column>
+
+        <el-table-column
+          prop="tagName"
+          label="标签名称">
+        </el-table-column>
+
+        <el-table-column
+          prop="username"
+          label="创建者">
+        </el-table-column>
+
+        <el-table-column
+          prop="addDate"
+          label="创建日期">
+          <template slot-scope="{row}">
+            <span>{{handleDate(row.addDate).format('YYYY-MM-DD HH:mm:ss') }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="state"
+          label="状态">
+          <template slot-scope="{row}">
+              {{row.state ? '已启用' : '已禁用'}}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="address"
+          label="操作"
+          width="150"
+          >
+          <template slot-scope="{row}">
+              <el-button
+                class="elButton"
+                type="text"
+                @click="active(row)"
+              >
+                {{ row.state ? '禁用' : '启用' }}
+              </el-button>
+
+              <el-button
+                class="elButton"
+                type="text"
+                :class="{ 'activeBtn':row.state }"
+                :disabled='row.state ? true : false'
+                @click="handleEdit(row)"
+                >
+                修改</el-button>
+
+              <el-button
+                class="elButton"
+                type="text"
+                :class="{ 'activeBtn':row.state }"
+                :disabled='row.state ? true : false'
+                @click="deletData(row)"
+              >
+              删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+    <!-- 修改按钮弹出层 -->
+    <editDialog
+      :visible.sync='showVisible'
+      :loadingList='loadingList'
+      :currentData='currentData'
+    >
+    </editDialog>
+  </div>
 </template>
 
 <script>
-export default {}
+import { list, changeState, remove } from '@/api/hmmm/tags'
+import dayjs from 'dayjs'
+import editDialog from '../components/tags-edit-dialog.vue'
+export default {
+  name: 'tags',
+  components: {
+    editDialog
+  },
+  data () {
+    return {
+      page: {
+        page: 1,
+        pagesize: 10
+      },
+      searchList: {
+        state: '',
+        page: 1,
+        pagesize: 10,
+        tagName: ''
+      },
+      status: [
+        { label: '禁用', value: 0 },
+        { label: '启用', value: 1 }
+      ],
+      listData: [],
+      showVisible: false,
+      currentData: [],
+      loading: false
+    }
+  },
+  created () {
+    this.loadingList()
+  },
+  computed: {
+    handleDate () {
+      return dayjs
+    }
+  },
+  methods: {
+    // 获取列表
+    async loadingList () {
+      const { data } = await list(this.page)
+      this.listData = data
+    },
+    // 状态(表格栏-操作列)
+    async active (data) {
+      data.state = data.state === 1 ? data.state - 1 : data.state + 1
+      await changeState(data)
+      this.$message.success('操作成功')
+    },
+    // 点击修改显示弹出层
+    handleEdit (row) {
+      this.showVisible = true
+      this.currentData = row
+      this.$children[1].newCurrentData = { ...row }
+    },
+    // 删除数据
+    async deletData (row) {
+      try {
+        await this.$confirm('此操作将永久删除该标签, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        this.loading = true
+        await remove(row)
+        await this.loadingList()
+      } catch (error) {
+        this.$message.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
+    // 新增按钮
+    async addTag () {
+      this.showVisible = true
+      this.$children[1].newCurrentData = { }
+    },
+    // 清除按钮
+    clearData () {
+      this.searchList = {
+        state: '',
+        page: 1,
+        pagesize: 10,
+        tagName: ''
+      }
+    },
+    // 搜索按钮
+    async searchBtn () {
+      this.loading = true
+      // 标签名称输入框有字时进入这个条件
+      if (this.searchList.tagName !== '') {
+        const { data } = await list({
+          tagName: this.searchList.tagName,
+          page: this.searchList.page,
+          pagesize: this.searchList.pagesize
+        })
+        this.listData = data
+      // 状态输入框有字时进入这个条件
+      } else if (this.searchList.state !== '') {
+        const { data } = await list({
+          page: this.searchList.page,
+          pagesize: this.searchList.pagesize,
+          state: this.searchList.state
+        })
+        this.listData = data
+      } else {
+        const { data } = await list(this.page)
+        this.listData = data
+      }
+      this.loading = false
+    }
+  }
+}
 </script>
 
-<style scoped lang='less'></style>
+<style scoped lang='less'>
+.container {
+  padding: 10px;
+}
+::v-deep .elForm {
+  height: 51px;
+}
+.elBtn {
+  width: 56px;
+}
+::v-deep .elInput {
+  width: 200px;
+  height: 32px;
+}
+::v-deep .elSelect {
+  width: 215px;
+  height: 32px;
+}
+.addBtn {
+  background-color: #66c141;
+  width: 97px;
+  height: 32px;
+  padding: 9px 15px;
+  font-size: 12px;
+  border-color: transparent;
+}
+::v-deep .is-leaf {
+  background-color: #fafafa !important;
+  border-bottom: 2px solid #e8e8e8 !important;
+}
+::v-deep .el-table__row{
+  height: 57px;
+}
+.elButton {
+  width: 30px;
+  height: 36px;
+  border: none;
+  background-color: transparent;
+  color: #399ffe;
+}
+.activeBtn {
+  color: #c0c9db;
+}
+</style>

@@ -6,7 +6,6 @@
  *
  * 标签
  */
-
 import { createAPI } from '@/utils/request'
 
 // 标签列表
@@ -29,3 +28,6 @@ export const remove = data => createAPI(`/tags/${data.id}`, 'delete', data)
 
 // 标签状态
 export const changeState = data => createAPI(`/tags/${data.id}/${data.state}`, 'post', data)
+
+// 学科简单列表
+export const subjects = data => createAPI('/subjects/simple', 'get', data)
