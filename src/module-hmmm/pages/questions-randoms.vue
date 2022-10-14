@@ -124,7 +124,7 @@ export default {
       // console.log(item.id)
       // const data = { id: item.id }
       // 测试多选
-      const data = { id: 23 }
+      const data = { id: 19 }
 
       const res = await detail(data)
       console.log(res.data)
