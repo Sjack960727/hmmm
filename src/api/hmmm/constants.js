@@ -36,7 +36,7 @@ export const difficulty = [
 ]
 
 // 题型
-export const questionType = [
+export const questionTypes = [
   {
     value: 1,
     label: '单选'
@@ -52,7 +52,7 @@ export const questionType = [
 ]
 
 // 方向
-export const direction = [
+export const directions = [
   'o2o',
   '外包服务',
   '企业服务',

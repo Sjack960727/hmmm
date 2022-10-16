@@ -7,20 +7,24 @@ export default {
     {
       id: 2,
       value: '多选'
+    },
+    {
+      id: 3,
+      value: '简答'
     }
   ],
-  difficulty: [
+  difficultys: [
     {
       id: 1,
       value: '简单'
     },
     {
       id: 2,
-      value: '困难'
+      value: '一般'
     },
     {
       id: 3,
-      value: '一般'
+      value: '困难'
     }
   ],
   questionType: [
@@ -31,6 +35,10 @@ export default {
     {
       id: 2,
       value: '已拒绝'
+    },
+    {
+      id: 0,
+      value: '待审核'
     }
   ],
   publishState: [
@@ -41,7 +49,12 @@ export default {
     {
       id: 1,
       value: '已发布'
+    },
+    {
+      id: 3,
+      value: '待发布'
     }
+
   ]
 }
 // export const changeword = (list) => {
