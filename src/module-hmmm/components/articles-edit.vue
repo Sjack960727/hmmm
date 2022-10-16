@@ -12,10 +12,7 @@
         </el-form-item>
 
         <el-form-item label="文章内容">
-          <!-- <el-input v-model="form.name"></el-input> -->
-            <quillEditor>
-
-            </quillEditor>
+          <quillEditor :articleDetail='newCurrentData' ></quillEditor>
         </el-form-item>
 
         <el-form-item label="视频地址">
@@ -32,12 +29,12 @@
 </template>
 
 <script>
-import { quillEditor } from 'vue-quill-editor' // 调用编辑器
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
 
+import quillEditor from './quill-editor.vue'
+
+import { update, add } from '@/api/hmmm/articles'
 export default {
+  name: 'articles-edit',
   components: {
     quillEditor
   },
@@ -50,8 +47,11 @@ export default {
       newCurrentData: {},
       rules: {
         title: [
-          { required: true, message: '请输入内容' }
+          { required: true, message: '请输入内容', trigger: 'blur' }
         ]
+      },
+      updateArticle: {
+        title: ''
       }
     }
   },
@@ -61,12 +61,23 @@ export default {
       this.newCurrentData = { ...this.currentData }
     }
   },
+
   methods: {
     handleClose () {
       this.$emit('update:editDialog', false)
       this.$refs.form.clearValidate('title')
     },
-    handleConfirm () {}
+    async handleConfirm () {
+      if (this.newCurrentData.id) {
+        await update(this.newCurrentData)
+        this.$message.success('更新成功')
+      } else {
+        await add(this.newCurrentData)
+        this.$message.success('添加成功')
+      }
+      this.handleClose()
+      this.$parent.loadListData()
+    }
   }
 }
 </script>

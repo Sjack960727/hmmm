@@ -3,13 +3,13 @@
     <el-pagination
       class="pagin"
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      :total="total"
       :current-page.sync="page.page"
       :page-size.sync="page.size"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
       :page-sizes="[2, 5, 10]"
       layout="prev, pager,  next, sizes, jumper"
-      :total="total"
     >
     </el-pagination>
   </div>
@@ -29,10 +29,12 @@ export default {
   },
   methods: {
     handleSizeChange (val) {
+      console.log(val)
       this.page.pagesize = val
       this.loadingList()
     },
-    handleCurrentChange () {
+    handleCurrentChange (val) {
+      console.log(val)
       this.loadingList()
     }
   }

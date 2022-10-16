@@ -3,15 +3,19 @@
     <el-card>
       <!-- 搜索/新增/总条数灰色提示栏目组件 -->
       <tags-headers :totalCount='listData.counts'>
+        <!-- 添加按钮 -->
         <template #addBtn>
           <el-button class="addBtn" type="primary" icon="el-icon-edit" @click="addArticle">新增技巧</el-button>
         </template>
+        <!-- 左侧文字 -->
         <template #label>
             <span>关键字</span>
         </template>
+        <!-- 关键字搜索框 -->
         <template #sarchInput>
           <el-input class="elInput" v-model="searchList.keyword"  placeholder="请输入名称"></el-input>
         </template>
+        <!-- 下拉框 -->
         <template #selectIput>
           <el-select class="elSelect" v-model="searchList.state" placeholder="请选择">
             <el-option
@@ -22,6 +26,7 @@
             </el-option>
           </el-select>
         </template>
+        <!-- 清除按钮 -->
         <template #ClearAndSearch>
           <el-button class="elBtn" size="small" @click="clearData">清除</el-button>
           <el-button class="elBtn" size="small" @click="searchBtn" type="primary">搜索</el-button>
@@ -34,33 +39,33 @@
         :data='listData.items'
         style="width: 100%"
         >
-
+        <!--序号列  -->
         <el-table-column
           type="index"
           label="序号"
           width="80"
-        >
-        </el-table-column>
-
+        />
+        <!-- 文章标题列 -->
         <el-table-column
-          prop="title"
           label="文章标题"
           width="400"
         >
+          <template slot-scope="{row}">
+              <span>{{row.title}}</span>
+              <i v-show="row.videoURL" class="el-icon-film" @click="showVideo(row)"></i>
+          </template>
         </el-table-column>
-
+        <!-- 阅读数列 -->
         <el-table-column
           prop="visits"
           label="阅读数"
-        >
-        </el-table-column>
-
+        />
+        <!-- 录入人列 -->
         <el-table-column
           prop="username"
           label="录入人"
-        >
-        </el-table-column>
-
+        />
+        <!-- 录入时间列 -->
         <el-table-column
           prop="creteTime"
           label="录入时间"
@@ -69,7 +74,7 @@
             <span>{{handleDate(row.addDate).format('YYYY-MM-DD HH:mm:ss') }}</span>
           </template>
         </el-table-column>
-
+        <!--状态列 -->
         <el-table-column
           prop="state"
           label="状态"
@@ -85,6 +90,7 @@
           width="180"
           >
           <template slot-scope="{row}">
+            <!-- 预览 -->
             <el-button
               class="elButton"
               type="text"
@@ -92,7 +98,7 @@
             >
               预览
             </el-button>
-
+            <!-- 禁用/启用 -->
             <el-button
               class="elButton"
               type="text"
@@ -100,7 +106,7 @@
             >
               {{ row.state ? '禁用' : '启用' }}
             </el-button>
-
+            <!-- 修改 -->
             <el-button
               class="elButton"
               type="text"
@@ -108,8 +114,9 @@
               :disabled='row.state ? true : false'
               @click="handleEdit(row)"
               >
-              修改</el-button>
-
+              修改
+            </el-button>
+            <!-- 删除 -->
             <el-button
               class="elButton"
               type="text"
@@ -117,11 +124,13 @@
               :disabled='row.state ? true : false'
               @click="deletData(row)"
             >
-            删除</el-button>
+             删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
 
+      <!-- 底部分页 -->
       <paging
         :loadingList='loadListData'
         :page='page'
@@ -129,15 +138,34 @@
       >
       </paging>
     </el-card>
+
     <!-- 预览框 -->
     <preview-dialog
       :showVisible.sync='showVisible'
       :currentData='currentData'
     />
-    <!-- 修改 -->
-    <articles-edit :editDialog.sync='editDialog' :currentData='currentData' />
-    <!-- 底部分页 -->
 
+    <!-- 修改组件 -->
+    <articles-edit  ref='editForm' :editDialog.sync='editDialog' :currentData='currentData' />
+
+    <!-- 视频 -->
+    <div class="vide-preview" v-if="isVideo" @click="isVideo = false">
+      <div class="close" @click="isVideo = false">
+        <i class="el-icon-close"></i>
+      </div>
+      <div class="box">
+        <video
+          loop
+          v-errorUrl='defaultURL'
+          autoplay
+          controls
+          pixels
+          class="isVideo"
+          :src="newVideoURL"
+        >
+        </video>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -149,6 +177,7 @@ import paging from '../components/tags-pagination.vue'
 import { list, changeState, remove } from '@/api/hmmm/articles'
 import dayjs from 'dayjs'
 export default {
+  name: 'articles',
   components: {
     tagsHeaders,
     previewDialog,
@@ -157,9 +186,12 @@ export default {
   },
   data () {
     return {
+      defaultURL: 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4',
+      isVideo: false,
       loading: false,
       showVisible: false,
       editDialog: false,
+      newVideoURL: '',
       page: {
         page: 1,
         pagesize: 10
@@ -182,13 +214,20 @@ export default {
     this.loadListData()
   },
   methods: {
+    // 获取列表
     async loadListData () {
       this.loading = true
       const { data } = await list(this.page)
       this.listData = data
       this.loading = false
     },
-    addArticle () {},
+
+    // 新增技巧
+    async addArticle () {
+      this.editDialog = true
+      this.$children[2].newCurrentData = {}
+    },
+
     // 清除按钮
     clearData () {
       this.searchList = {}
@@ -227,6 +266,7 @@ export default {
       }
       this.loading = false
     },
+
     // 预览
     preview (row) {
       this.showVisible = true
@@ -263,6 +303,21 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+
+    // 展示视频播放
+    showVideo ({ videoURL }) {
+      this.newVideoURL = videoURL
+      this.isVideo = true
+    }
+  },
+  directives: {
+    errorUrl: {
+      inserted: (el, binding, vnode) => {
+        el.onerror = function () {
+          el.src = binding.value
+        }
+      }
     }
   },
   computed: {
@@ -290,5 +345,52 @@ export default {
 ::v-deep .is-leaf {
   background-color: #fafafa !important;
   border-bottom: 2px solid #e8e8e8 !important;
+}
+.el-icon-film {
+  color:#001cfd;
+  font-size:18px;
+  margin-left: 15px;
+}
+.vide-preview {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.3);
+  overflow: hidden;
+  z-index: 9999;
+}
+.box {
+  width: 800px;
+  height: 600px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+.isVideo {
+  width: 100%;
+  height: 100%;
+}
+.close {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translate(-50%);
+  background: rgba(0,0,0,.4);
+  box-shadow: 0 0 5px rgb(0 0 0 / 40%);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 50px;
+  color: #fff;
+  font-size: 20px;
+  z-index: 100;
+}
+::v-deep .el-icon-close {
+  font-size: 20px;
+  color: white;
 }
 </style>
