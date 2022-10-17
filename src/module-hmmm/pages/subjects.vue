@@ -72,8 +72,10 @@
         <el-table-column label="操作"
                          width="260">
           <template slot-scope="{row}">
-            <el-button type="text">学科分类</el-button>
-            <el-button type="text">学科标签</el-button>
+            <el-button type="text"
+                       @click="$router.push(`/subjects/directorys?id=${row.id}&name=${row.subjectName}`)">学科分类</el-button>
+            <el-button type="text"
+                       @click="$router.push(`/subjects/tags?id=${row.id}&name=${row.subjectName}`)">学科标签</el-button>
             <el-button type="text"
                        @click="updateSubject(row)">修改</el-button>
             <el-button type="text"
@@ -157,6 +159,7 @@ export default {
       // } else {
       //   row.isFrontDisplay = true
       // }
+      console.log(row)
       this.$refs.subjectAdd.formData = { ...row }
       this.subjectDialog = true
     },
