@@ -284,8 +284,8 @@ export default {
         province: '',
         city: '',
         direction: '',
-        questionType: '2',
-        difficulty: '1',
+        questionType: '',
+        difficulty: '',
         question: '',
         options: [],
         videoURL: '',
@@ -456,6 +456,7 @@ export default {
         this.formData.options = [...this.singleOptions]
       }
       if (this.formData.questionType === '2') {
+        this.formData.options = [...this.mulOptions]
       }
       this.formData.tags = this.tagsValue.join(',')
       console.log(this.formData)
