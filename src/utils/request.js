@@ -104,3 +104,7 @@ export const createFormAPI = (url, method, data) => {
     ...config
   })
 }
+
+export const request = () => {
+  return instance
+}
