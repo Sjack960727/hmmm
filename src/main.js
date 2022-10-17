@@ -10,6 +10,7 @@ import i18n from './lang' // Internationalization
 import './icons' // icon
 import './errorLog' // error log
 import * as filters from './filters' // global filters
+import * as questions from './filters/questions' // global filters
 import './mock' // simulation data
 // font-awesome
 import 'font-awesome/css/font-awesome.css'
@@ -39,6 +40,9 @@ Vue.use(Element, {
 // 过滤器
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
+})
+Object.keys(questions).forEach(key => {
+  Vue.filter(key, questions[key])
 })
 
 Vue.config.productionTip = false
