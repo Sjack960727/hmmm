@@ -5,253 +5,229 @@
         <span>试题录入</span>
       </div>
       <div>
-        <el-form ref="form" :model="formData" :rules="rules" label-width="80px">
-          <el-form-item label="学科" label-width="120px" prop="subjectID">
-            <el-select
-              v-model="formData.subjectID"
-              placeholder="请选择"
-              size="medium"
-              style="width: 400px"
-              @change="getcatalog(formData.subjectID)"
-            >
-              <el-option
-                v-for="item in subjectOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
+        <el-form ref="form"
+                 :model="formData"
+                 :rules="rules"
+                 label-width="80px">
+          <el-form-item label="学科"
+                        label-width="120px"
+                        prop="subjectID">
+            <el-select v-model="formData.subjectID"
+                       placeholder="请选择"
+                       size="medium"
+                       style="width: 400px"
+                       @change="getcatalog(formData.subjectID)">
+              <el-option v-for="item in subjectOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="目录" label-width="120px" prop="catalogID">
-            <el-select
-              v-model="formData.catalogID"
-              placeholder="请选择"
-              size="medium"
-              style="width: 400px"
-            >
-              <el-option
-                v-for="item in catalogOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
+          <el-form-item label="目录"
+                        label-width="120px"
+                        prop="catalogID">
+            <el-select v-model="formData.catalogID"
+                       placeholder="请选择"
+                       size="medium"
+                       style="width: 400px">
+              <el-option v-for="item in catalogOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="企业" label-width="120px" prop="enterpriseID">
-            <el-select
-              v-model="formData.enterpriseID"
-              placeholder="请选择"
-              size="medium"
-              style="width: 400px"
-            >
-              <el-option
-                v-for="item in enterpriseOptions"
-                :key="item.id"
-                :label="item.company"
-                :value="item.id"
-              >
+          <el-form-item label="企业"
+                        label-width="120px"
+                        prop="enterpriseID">
+            <el-select v-model="formData.enterpriseID"
+                       placeholder="请选择"
+                       size="medium"
+                       style="width: 400px">
+              <el-option v-for="item in enterpriseOptions"
+                         :key="item.id"
+                         :label="item.company"
+                         :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="城市" label-width="120px" prop="province">
-            <el-select
-              v-model="formData.province"
-              placeholder="请选择"
-              style="width: 198px"
-              @change="formData.city = ''"
-            >
-              <el-option
-                v-for="item in provinces"
-                :key="item"
-                :label="item"
-                :value="item"
-              >
+          <el-form-item label="城市"
+                        label-width="120px"
+                        prop="province">
+            <el-select v-model="formData.province"
+                       placeholder="请选择"
+                       style="width: 198px"
+                       @change="formData.city = ''">
+              <el-option v-for="item in provinces"
+                         :key="item"
+                         :label="item"
+                         :value="item">
               </el-option>
             </el-select>
 
-            <el-select
-              v-model="formData.city"
-              style="margin-left: 4px; width: 198px"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in citys"
-                :key="item"
-                :label="item"
-                :value="item"
-              >
+            <el-select v-model="formData.city"
+                       style="margin-left: 4px; width: 198px"
+                       placeholder="请选择">
+              <el-option v-for="item in citys"
+                         :key="item"
+                         :label="item"
+                         :value="item">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="方向" label-width="120px" prop="direction">
-            <el-select
-              v-model="formData.direction"
-              placeholder="请选择"
-              size="medium"
-              style="width: 400px"
-            >
-              <el-option
-                v-for="item in directionOptions"
-                :key="item"
-                :label="item"
-                :value="item"
-              >
+          <el-form-item label="方向"
+                        label-width="120px"
+                        prop="direction">
+            <el-select v-model="formData.direction"
+                       placeholder="请选择"
+                       size="medium"
+                       style="width: 400px">
+              <el-option v-for="item in directionOptions"
+                         :key="item"
+                         :label="item"
+                         :value="item">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="题型" label-width="120px" prop="questionType">
+          <el-form-item label="题型"
+                        label-width="120px"
+                        prop="questionType">
             <div>
               <el-radio-group v-model="formData.questionType">
-                <el-radio
-                  v-for="item in questionType"
-                  :key="item.label"
-                  :label="item.value + ''"
-                  >{{ item.label }}</el-radio
-                >
+                <el-radio v-for="item in questionType"
+                          :key="item.label"
+                          :label="item.value + ''">{{ item.label }}</el-radio>
               </el-radio-group>
             </div>
           </el-form-item>
-          <el-form-item label="难度" label-width="120px" prop="difficulty">
+          <el-form-item label="难度"
+                        label-width="120px"
+                        prop="difficulty">
             <div>
               <el-radio-group v-model="formData.difficulty">
-                <el-radio
-                  v-for="item in difficulty"
-                  :key="item.label"
-                  :label="item.value + ''"
-                  >{{ item.label }}</el-radio
-                >
+                <el-radio v-for="item in difficulty"
+                          :key="item.label"
+                          :label="item.value + ''">{{ item.label }}</el-radio>
               </el-radio-group>
             </div>
           </el-form-item>
-          <el-form-item label="题干" label-width="120px" prop="question">
-            <quill-editor
-              v-model="formData.question"
-              ref="myQuillEditor"
-              :options="editorOption"
-              @change="onEditorChange"
-            ></quill-editor>
+          <el-form-item label="题干"
+                        label-width="120px"
+                        prop="question">
+            <quill-editor v-model="formData.question"
+                          ref="myQuillEditor"
+                          :options="editorOption"
+                          @change="onEditorChange"></quill-editor>
           </el-form-item>
           <!-- 单选 -->
-          <el-form-item
-            v-if="formData.questionType === '1'"
-            label="选项单选"
-            label-width="120px"
-          >
+          <el-form-item v-if="formData.questionType === '1'"
+                        label="选项单选"
+                        label-width="120px">
             <el-radio-group v-model="radio">
-              <div v-for="item in singleOptions" :key="item.code">
-                <el-radio
-                  :label="item.code"
-                  class="options"
-                  @change="item.isRight=(item.code===radio)"
-                >
+              <div v-for="item in singleOptions"
+                   :key="item.code">
+                <el-radio :label="item.code"
+                          class="options"
+                          @change="item.isRight=(item.code===radio)">
                   {{ item.code }}:
-                  <el-input
-                    v-model="item.title"
-                    placeholder="请输入内容"
-                    style="width: 240px"
-                  ></el-input>
-                  <el-upload
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    list-type="picture-card"
-                    :on-preview="handlePictureCardPreview"
-                    :on-remove="handleRemove"
-                    :on-change="onChange"
-                    :http-request="onHttpRequest"
-                    :limit="1"
-                    class="uploadIMG"
-                    :before-upload="beforeUpload"
-                    ><div class="imgTxt">上传图片</div>
+                  <el-input v-model="item.title"
+                            placeholder="请输入内容"
+                            style="width: 240px"></el-input>
+                  <el-upload action="https://jsonplaceholder.typicode.com/posts/"
+                             list-type="picture-card"
+                             :on-preview="handlePictureCardPreview"
+                             :on-remove="handleRemove"
+                             :on-change="onChange"
+                             :http-request="onHttpRequest"
+                             :limit="1"
+                             class="uploadIMG"
+                             :before-upload="beforeUpload">
+                    <div class="imgTxt">上传图片</div>
                   </el-upload>
                   <i class="el-icon-circle-close imgIcon"> </i>
                 </el-radio>
               </div>
-              <el-button type="danger" size="small" disabled
-                >+增加选项与答案</el-button
-              >
+              <el-button type="danger"
+                         size="small"
+                         disabled>+增加选项与答案</el-button>
             </el-radio-group>
           </el-form-item>
           <!-- 多选 -->
-          <el-form-item
-            v-if="formData.questionType === '2'"
-            label="选项多选"
-            label-width="120px"
-          >
-            <el-checkbox-group v-model="checkList" >
-              <div v-for="item in mulOptions" :key="item.code">
-                <el-checkbox class="options" :label="item.code " @change="item.isRight=checkList.includes(item.code)">
+          <el-form-item v-if="formData.questionType === '2'"
+                        label="选项多选"
+                        label-width="120px">
+            <el-checkbox-group v-model="checkList">
+              <div v-for="item in mulOptions"
+                   :key="item.code">
+                <el-checkbox class="options"
+                             :label="item.code "
+                             @change="item.isRight=checkList.includes(item.code)">
                   {{item.code}} :
-                  <el-input
-                    v-model="item.title"
-                    placeholder="请输入内容"
-                    style="width: 240px"
-
-                  ></el-input>
-                  <el-upload
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    list-type="picture-card"
-                    :on-preview="handlePictureCardPreview"
-                    :on-remove="handleRemove"
-                    :on-change="onChange"
-                    :http-request="onHttpRequest"
-                    :limit="1"
-                    class="uploadIMG"
-                    :before-upload="beforeUpload"
-                    ><div class="imgTxt">上传图片</div>
+                  <el-input v-model="item.title"
+                            placeholder="请输入内容"
+                            style="width: 240px"></el-input>
+                  <el-upload action="https://jsonplaceholder.typicode.com/posts/"
+                             list-type="picture-card"
+                             :on-preview="handlePictureCardPreview"
+                             :on-remove="handleRemove"
+                             :on-change="onChange"
+                             :http-request="onHttpRequest"
+                             :limit="1"
+                             class="uploadIMG"
+                             :before-upload="beforeUpload">
+                    <div class="imgTxt">上传图片</div>
                   </el-upload>
                   <i class="el-icon-circle-close imgIcon"> </i>
                 </el-checkbox>
               </div>
 
-              <el-button type="danger" size="small" @click="addChoice">+增加选项与答案</el-button>
+              <el-button type="danger"
+                         size="small"
+                         @click="addChoice">+增加选项与答案</el-button>
             </el-checkbox-group>
           </el-form-item>
 
-          <el-form-item label="解析视频" label-width="120px" >
-            <el-input
-              v-model="formData.videoURL"
-              placeholder="请输入内容"
-              style="width: 400px"
-            ></el-input>
+          <el-form-item label="解析视频"
+                        label-width="120px">
+            <el-input v-model="formData.videoURL"
+                      placeholder="请输入内容"
+                      style="width: 400px"></el-input>
           </el-form-item>
-          <el-form-item label="答案解析" label-width="120px" prop="answer">
-            <quill-editor
-              v-model="formData.answer"
-              ref="myQuillEditor"
-              :options="editorOption"
-            ></quill-editor>
+          <el-form-item label="答案解析"
+                        label-width="120px"
+                        prop="answer">
+            <quill-editor v-model="formData.answer"
+                          ref="myQuillEditor"
+                          :options="editorOption"></quill-editor>
           </el-form-item>
-          <el-form-item label="题目备注" label-width="120px">
-            <el-input
-              type="textarea"
-              :rows="4"
-              placeholder="请输入内容"
-              v-model="formData.remarks"
-              style="width: 400px; min-height: 33px"
-            >
+          <el-form-item label="题目备注"
+                        label-width="120px">
+            <el-input type="textarea"
+                      :rows="4"
+                      placeholder="请输入内容"
+                      v-model="formData.remarks"
+                      style="width: 400px; min-height: 33px">
             </el-input>
           </el-form-item>
-          <el-form-item label="试题标签" label-width="120px">
-            <el-select
-              v-model="tagsValue"
-              multiple
-              filterable
-              allow-create
-              default-first-option
-              placeholder="请选择文章标签"
-            >
-              <el-option
-                v-for="item in tagsOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
+          <el-form-item label="试题标签"
+                        label-width="120px">
+            <el-select v-model="tagsValue"
+                       multiple
+                       filterable
+                       allow-create
+                       default-first-option
+                       placeholder="请选择文章标签">
+              <el-option v-for="item in tagsOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label-width="120px">
-            <el-button type="primary" @click="submitQ">确认提交</el-button>
+            <el-button type="primary"
+                       @click="submitQ">确认提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -270,7 +246,7 @@ import { simple } from '@/api/hmmm/subjects.js'
 import { simple as getcatalog } from '@/api/hmmm/directorys.js'
 import { simple as gettags } from '@/api/hmmm/tags.js'
 import { list } from '@/api/hmmm/companys.js'
-import { add, update } from '@/api/hmmm/questions.js'
+import { add, update, detail } from '@/api/hmmm/questions.js'
 export default {
   components: {
     quillEditor
@@ -362,6 +338,7 @@ export default {
         placeholder: '请在这里输入'
       },
       asciiCount: 69,
+      questionId: this.$route.query.id,
       rules: {
         subjectID: [{ required: true, message: '请选择学科', trigger: 'change' }],
         catalogID: [{ required: true, message: '请选择目录', trigger: 'change' }],
@@ -384,11 +361,23 @@ export default {
   created () {
     this.getsubject()
     this.getEnterprise()
+    this.getformateDate()
   },
   methods: {
     async getsubject () {
       const { data } = await simple()
       this.subjectOptions = data
+    },
+    async getformateDate () {
+      const { data } = await detail({ id: +this.questionId })
+      this.formData = data
+      if (+data.questionType === 1) {
+        this.singleOptions = data.options
+      } else if (+data.questionType === 2) {
+        this.mulOptions = data.options
+      }
+
+      console.log(data)
     },
     async getcatalog (id) {
       this.formData.catalogID = ''
@@ -409,9 +398,9 @@ export default {
       // console.log(this.formData.question)
     },
     // 传图请求
-    handleRemove (file, fileList) {},
-    handlePictureCardPreview (file) {},
-    onChange (file, fileList) {},
+    handleRemove (file, fileList) { },
+    handlePictureCardPreview (file) { },
+    onChange (file, fileList) { },
     onHttpRequest () {
       // 请求成功回显缩略图
       console.log(111)
@@ -450,18 +439,28 @@ export default {
     // 提交/修改事件  修改事件未写
     async submitQ () {
       await this.$refs.form.validate()
-      console.log(111)
       // console.log(this.mulOptions)
       if (this.formData.questionType === '1') {
         this.formData.options = [...this.singleOptions]
       }
       if (this.formData.questionType === '2') {
+        this.formData.options = [...this.mulOptions]
       }
       this.formData.tags = this.tagsValue.join(',')
       console.log(this.formData)
-      const res = await add(this.formData)
-      if (res.status === 200) return this.$message.success('试题录入成功')
-      console.log(res)
+      if (this.questionId) {
+        try {
+          await update(this.formData)
+          this.$router.push('/questions/list')
+          this.$message.success('修改成功')
+        } catch (error) {
+          this.$message.error('修改失败')
+        }
+      } else {
+        const res = await add(this.formData)
+        if (res.status === 200) return this.$message.success('试题录入成功')
+        console.log(res)
+      }
     }
   }
 }
