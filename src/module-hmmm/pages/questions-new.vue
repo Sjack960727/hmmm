@@ -270,7 +270,7 @@ import { simple } from '@/api/hmmm/subjects.js'
 import { simple as getcatalog } from '@/api/hmmm/directorys.js'
 import { simple as gettags } from '@/api/hmmm/tags.js'
 import { list } from '@/api/hmmm/companys.js'
-import { add, update } from '@/api/hmmm/questions.js'
+import { add, update, detail } from '@/api/hmmm/questions.js'
 export default {
   components: {
     quillEditor
@@ -372,8 +372,8 @@ export default {
         difficulty: [{ required: true, message: '请选择难度', trigger: 'change' }],
         question: [{ required: true, message: '请输入题干', trigger: 'blur' }],
         answer: [{ required: true, message: '请输入答案解析', trigger: 'blur' }]
-
-      }
+      },
+      questionID: ''
     }
   },
   computed: {
@@ -450,19 +450,24 @@ export default {
     // 提交/修改事件  修改事件未写
     async submitQ () {
       await this.$refs.form.validate()
-      console.log(111)
+      // console.log(111)
       // console.log(this.mulOptions)
-      if (this.formData.questionType === '1') {
-        this.formData.options = [...this.singleOptions]
+      if (this.questionID) {
+        const res = await update(this.formData)
+        console.log(res)
+      } else {
+        if (this.formData.questionType === '1') {
+          this.formData.options = [...this.singleOptions]
+        }
+        if (this.formData.questionType === '2') {
+          this.formData.options = [...this.mulOptions]
+        }
+        this.formData.tags = this.tagsValue.join(',')
+        console.log(this.formData)
+        const res = await add(this.formData)
+        if (res.status === 200) return this.$message.success('试题录入成功')
+        console.log(res)
       }
-      if (this.formData.questionType === '2') {
-        this.formData.options = [...this.mulOptions]
-      }
-      this.formData.tags = this.tagsValue.join(',')
-      console.log(this.formData)
-      const res = await add(this.formData)
-      if (res.status === 200) return this.$message.success('试题录入成功')
-      console.log(res)
     }
   }
 }
