@@ -1,15 +1,14 @@
 <template>
   <div class="add-form">
-    <el-dialog :title="text+pageTitle" :visible.sync="dialogFormVisible">
+    <el-dialog :title="text + pageTitle" :visible.sync="dialogFormVisible">
       <el-form
         :rules="ruleInline"
         ref="dataForm"
         :model="formBase"
         label-position="left"
         label-width="120px"
-        style="width: 400px; margin-left:120px;"
+        style="width: 400px; margin-left: 120px"
       >
-
         <el-form-item :label="$t('table.username')" prop="username">
           <el-input v-model="formBase.username"></el-input>
         </el-form-item>
@@ -19,7 +18,7 @@
         <el-form-item
           :label="$t('table.paddword')"
           prop="password"
-          v-if="formBase.password!=undefined"
+          v-if="formBase.password != undefined"
         >
           <el-input v-model="formBase.password"></el-input>
         </el-form-item>
@@ -29,7 +28,10 @@
           <el-input v-model="formBase.role"></el-input>
         </el-form-item>
         <!-- 权限组 -->
-        <el-form-item :label="$t('table.permissionUser')" prop="permission_group_id">
+        <el-form-item
+          :label="$t('table.permissionUser')"
+          prop="permission_group_id"
+        >
           <el-select class="filter-item" v-model="formBase.permission_group_id">
             <el-option
               v-for="item in PermissionGroupsList"
@@ -59,15 +61,17 @@
         <el-form-item :label="$t('table.introduction')">
           <el-input
             type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="Please input"
             v-model="formBase.introduction"
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">{{$t('table.cancel')}}</el-button>
-        <el-button type="primary" @click="createData">{{$t('table.confirm')}}</el-button>
+        <el-button @click="handleClose">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="createData">{{
+          $t('table.confirm')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -131,11 +135,11 @@ export default {
   },
   // 挂载结束
 
-  mounted: function () {},
+  mounted: function () { },
   // 创建完毕状态
-  created () {},
+  created () { },
   // 组件更新
-  updated: function () {}
+  updated: function () { }
 }
 </script>
 <style>
@@ -146,6 +150,6 @@ export default {
   margin-bottom: 22px;
 }
 .el-dialog__footer {
-  text-align: center
+  text-align: center;
 }
 </style>
